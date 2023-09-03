@@ -2,7 +2,9 @@ package com.fortuna.fabricktest.service;
 
 import java.net.URI;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.RequestEntity;
 import org.springframework.http.ResponseEntity;
@@ -23,10 +25,15 @@ public class FabrickRestService {
 	@Value("${fabrick.apiKey}")
 	private String apiKey;
 
+	private RestTemplate client;
+	
+
+	@Autowired
+	public FabrickRestService(RestTemplateBuilder builder) {
+	    this.client = builder.build();
+	}
 	
 	protected <T extends FabrickResponse<?>> ResponseEntity<T> get(URI uri, ParameterizedTypeReference<T> typeRef) {
-		
-		RestTemplate client = new RestTemplate();
 		
 		RequestEntity<Void> requestEntity = RequestEntity.get(uri)
 				.header("Auth-Schema", authSchema)
@@ -42,13 +49,10 @@ public class FabrickRestService {
 			throw restExc;
 		}
 		
-		
 		return resEntity;
 	}
 	
 	protected <T,E extends FabrickResponse<?>> ResponseEntity<E> post(URI uri, T bodyRequest, ParameterizedTypeReference<E> typeRef) {
-		
-		RestTemplate client = new RestTemplate();
 		
 		RequestEntity<T> requestEntity = RequestEntity.post(uri)
 				.header("Auth-Schema", authSchema)

@@ -3,6 +3,7 @@ package com.fortuna.fabricktest.service.moneytransfer;
 import java.net.URI;
 
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -27,13 +28,17 @@ public class MoneyTransferService extends FabrickRestService implements MoneyTra
 	@Value( "${fabrick.url.createMoneyTransfer}" )
 	private String createMoneyTransfereEndpoint;
 	
+	public MoneyTransferService(RestTemplateBuilder builder) {
+		super(builder);
+	}
+	
 	@Override
 	public CreateMoneyTransferPayload createMoneyTransfer(CreateMoneyTransferReq moneyTransferInput, String accountId) throws FabrickRestException {		
 		URI uri = UriComponentsBuilder
 				.fromUriString(baseUrl+createMoneyTransfereEndpoint)
 				.build(accountId);
 		
-		//TODO implementare builderzz
+		//TODO implementare builder
 		CreateMoneyTransferBody body = new CreateMoneyTransferBody();
 		
 		Account acc = new Account();
