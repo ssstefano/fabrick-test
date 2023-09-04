@@ -19,7 +19,9 @@ import org.springframework.test.context.ActiveProfiles;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fortuna.fabricktest.controller.bean.ErrorRes;
+import com.fortuna.fabricktest.data.entity.TransactionEntity;
 import com.fortuna.fabricktest.enums.EnumError;
+import com.fortuna.fabricktest.service.account.AccountService;
 import com.fortuna.fabricktest.service.account.bean.TransactionPayload.Transaction;
 
 @SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT)
@@ -39,6 +41,11 @@ public class AccountControllerIntegrationTest {
 	private String accountIdFail = "1";
 	private String fromDate = "2019-01-01";
 	private String toDate = "2019-12-01";
+	
+	private String transactionDescription = "PD VISA CORPORATE 10";
+	
+	@Autowired
+	AccountService accountService;
 	
 	@Test
 	public void getBalanceOk() {
@@ -94,6 +101,13 @@ public class AccountControllerIntegrationTest {
 		
 		assertNotNull(transactions);
 		assertTrue(transactions.size() > 0);
+		
+		List<TransactionEntity> entities = accountService.getAccountLocalTransactionsByDescr(transactionDescription);
+		assertNotNull(entities);
+		assertEquals(1, entities.size());
+		
+		assertEquals(transactionDescription, entities.get(0).getDescription());
+		assertEquals("282831", entities.get(0).getTransactionId());
 	}
 	
 	@Test

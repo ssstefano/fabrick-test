@@ -124,4 +124,9 @@ public class AccountService extends FabrickRestService implements AccountService
 		
 		return transactions;
 	}
+
+	@Override
+	public List<TransactionEntity> getAccountLocalTransactionsByDescr(String descr) {
+		return this.transactionRepository.findTransactionByDescription(descr);
+	}
 }
