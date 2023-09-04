@@ -10,12 +10,10 @@ import org.springframework.web.context.request.ServletWebRequest;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
-import com.fortuna.fabricktest.controller.RestLoggerAspect;
-
 
 public class GenericExceptionHandler extends ResponseEntityExceptionHandler {
 	 
-	private static final Logger LOGGER = LoggerFactory.getLogger(RestLoggerAspect.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(GenericExceptionHandler.class);
 	
 	@Override
 	protected ResponseEntity<Object> handleExceptionInternal(Exception ex, @Nullable Object body, HttpHeaders headers, HttpStatusCode status, WebRequest request) {

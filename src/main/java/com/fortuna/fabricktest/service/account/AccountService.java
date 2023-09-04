@@ -2,20 +2,28 @@ package com.fortuna.fabricktest.service.account;
 
 import java.net.URI;
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.util.UriComponentsBuilder;
 
+import com.fortuna.fabricktest.data.TransactionRepository;
+import com.fortuna.fabricktest.data.entity.TransactionEntity;
 import com.fortuna.fabricktest.enums.EnumError;
 import com.fortuna.fabricktest.exception.ServiceException;
 import com.fortuna.fabricktest.service.FabrickResponse;
 import com.fortuna.fabricktest.service.FabrickRestService;
 import com.fortuna.fabricktest.service.account.bean.AccountBalancePayload;
 import com.fortuna.fabricktest.service.account.bean.TransactionPayload;
+import com.fortuna.fabricktest.service.account.bean.TransactionPayload.Transaction;
 
 @Service
 public class AccountService extends FabrickRestService implements AccountServiceI {
@@ -26,6 +34,9 @@ public class AccountService extends FabrickRestService implements AccountService
 	private String accountBalanceEndpoint;
 	@Value( "${fabrick.url.transactions}" )
 	private String transactionsEndpoint;
+	
+	@Autowired
+	private TransactionRepository transactionRepository;
 	
 	public AccountService(RestTemplateBuilder builder) {
 		super(builder);
@@ -80,7 +91,37 @@ public class AccountService extends FabrickRestService implements AccountService
 			
 			return transactions;
 		} else {
-			throw new ServiceException(EnumError.SERVICE_TRANSACTION);
+			throw new ServiceException("fromDate / toDate not valid", EnumError.SERVICE_TRANSACTION);
 		}
+	}
+	
+	@Override
+	@Transactional
+	public TransactionPayload getAccountTransactionsAndSave(String accountId, LocalDate fromDate, LocalDate toDate) {
+		
+		TransactionPayload transactions = this.getAccountTransactions(accountId, fromDate, toDate);
+		List<Transaction> list = transactions.getList();
+		
+		List<TransactionEntity> entities = new ArrayList<>();
+		if(list != null && list.size() > 0) {
+			
+			entities = list.stream().map(tr -> {
+				
+			TransactionEntity entity = new TransactionEntity();
+			entity.setAccountingDate(tr.getAccountingDate());
+			entity.setValueDate(tr.getValueDate());
+			entity.setDescription(tr.getDescription());
+			entity.setCurrency(tr.getCurrency().getCurrencyCode());
+			entity.setOperationId(tr.getOperationId());
+			entity.setTransactionId(tr.getTransactionId());
+			return entity;
+				
+			}).collect(Collectors.toList());
+					
+		}
+		
+		transactionRepository.saveAll(entities);
+		
+		return transactions;
 	}
 }

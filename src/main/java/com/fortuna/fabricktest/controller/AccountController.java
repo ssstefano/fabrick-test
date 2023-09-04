@@ -15,6 +15,7 @@ import com.fortuna.fabricktest.controller.validation.DateConstraint;
 import com.fortuna.fabricktest.service.account.AccountServiceI;
 import com.fortuna.fabricktest.service.account.bean.AccountBalancePayload;
 import com.fortuna.fabricktest.service.account.bean.TransactionPayload;
+import com.fortuna.fabricktest.service.account.bean.TransactionPayload.Transaction;
 
 import jakarta.validation.constraints.NotNull;
 
@@ -36,12 +37,12 @@ public class AccountController {
 	
 	//TODO: fare method validator per validare entrambe le date
 	@GetMapping("/transactions")
-	public ResponseEntity<List<TransactionPayload.Transaction>> transactions(
+	public ResponseEntity<List<Transaction>> transactions(
 			@RequestParam(value = "accountId") @NotNull String accountId, 
 			@RequestParam(value = "fromDate")  @DateConstraint String fromDate, 
 			@RequestParam(value = "toDate") @DateConstraint String toDate) {
 		
-		TransactionPayload transactions = accountService.getAccountTransactions(accountId, LocalDate.parse(fromDate), LocalDate.parse(toDate));
+		TransactionPayload transactions = accountService.getAccountTransactionsAndSave(accountId, LocalDate.parse(fromDate), LocalDate.parse(toDate));
 		
 		return ResponseEntity.ok(transactions.getList());
 	}
