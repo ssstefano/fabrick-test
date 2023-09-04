@@ -29,7 +29,7 @@ public class AccountControllerRuntimeExceptionTest {
 	@Test
 	public void getBalanceHandleException() throws Exception {
 		
-		this.mockMvc.perform(get("/account/balance").queryParam("accountId", "123456"))
+		this.mockMvc.perform(get("/account/123456/balance"))
 		.andExpect(status().is5xxServerError())
 		.andExpect(jsonPath("$", hasSize(1)))
 		.andExpect(jsonPath("$[0].errorCode", is("R0001")))

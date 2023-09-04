@@ -24,8 +24,6 @@ public class DateValidator implements ConstraintValidator<DateConstraint, String
 			}
 		} else {
 			return false;
-		}
-		
+		}	
 	}
-
 }

@@ -13,12 +13,11 @@ import com.fortuna.fabricktest.controller.bean.CreateMoneyTransferReq;
 import com.fortuna.fabricktest.enums.EnumError;
 import com.fortuna.fabricktest.exception.FabrickRestException;
 import com.fortuna.fabricktest.exception.ServiceException;
-import com.fortuna.fabricktest.service.FabrickResponse;
 import com.fortuna.fabricktest.service.FabrickRestService;
-import com.fortuna.fabricktest.service.moneytransfer.bean.Account;
+import com.fortuna.fabricktest.service.bean.FabrickResponse;
 import com.fortuna.fabricktest.service.moneytransfer.bean.CreateMoneyTransferBody;
+import com.fortuna.fabricktest.service.moneytransfer.bean.CreateMoneyTransferBody.CreateMoneyTransferBodyBuilder;
 import com.fortuna.fabricktest.service.moneytransfer.bean.CreateMoneyTransferPayload;
-import com.fortuna.fabricktest.service.moneytransfer.bean.Creditor;
 
 @Service
 public class MoneyTransferService extends FabrickRestService implements MoneyTransferServiceI {
@@ -34,27 +33,19 @@ public class MoneyTransferService extends FabrickRestService implements MoneyTra
 	
 	@Override
 	public CreateMoneyTransferPayload createMoneyTransfer(CreateMoneyTransferReq moneyTransferInput, String accountId) throws FabrickRestException {		
+		
 		URI uri = UriComponentsBuilder
 				.fromUriString(baseUrl+createMoneyTransfereEndpoint)
 				.build(accountId);
 		
-		//TODO implementare builder
-		CreateMoneyTransferBody body = new CreateMoneyTransferBody();
+		CreateMoneyTransferBodyBuilder builder = new CreateMoneyTransferBodyBuilder();
 		
-		Account acc = new Account();
-		acc.setAccountCode(moneyTransferInput.getCreditorIban());
-		
-		Creditor cred = new Creditor();
-		cred.setAccount(acc);
-		cred.setName(moneyTransferInput.getCreditorName());
-		body.setCreditor(cred);
-		
-		body.setAmount(moneyTransferInput.getAmount());
-		body.setCurrency(moneyTransferInput.getCurrency());
-		
-		body.setExecutionDate(moneyTransferInput.getExecutionDate());
-		
-		body.setDescription(moneyTransferInput.getDescription());
+		CreateMoneyTransferBody body = builder.withAmount(moneyTransferInput.getAmount())
+				.withCurrency(moneyTransferInput.getCurrency())
+				.withDescription(moneyTransferInput.getDescription())
+				.withExecutionDate(moneyTransferInput.getExecutionDate())
+				.withCreditor(moneyTransferInput.getCreditorName(), moneyTransferInput.getCreditorIban())
+				.build();
 		
 		ParameterizedTypeReference<FabrickResponse<CreateMoneyTransferPayload>> typeRef = 
 				new ParameterizedTypeReference<FabrickResponse<CreateMoneyTransferPayload>>() {};

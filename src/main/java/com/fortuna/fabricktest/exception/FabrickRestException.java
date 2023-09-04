@@ -4,7 +4,7 @@ import java.util.List;
 
 import org.springframework.http.HttpStatusCode;
 
-import com.fortuna.fabricktest.service.FabrickError;
+import com.fortuna.fabricktest.service.bean.FabrickError;
 
 public class FabrickRestException  extends RuntimeException {
 	private static final long serialVersionUID = -7527988668224662134L;

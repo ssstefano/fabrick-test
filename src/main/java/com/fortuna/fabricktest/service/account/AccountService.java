@@ -19,11 +19,11 @@ import com.fortuna.fabricktest.data.TransactionRepository;
 import com.fortuna.fabricktest.data.entity.TransactionEntity;
 import com.fortuna.fabricktest.enums.EnumError;
 import com.fortuna.fabricktest.exception.ServiceException;
-import com.fortuna.fabricktest.service.FabrickResponse;
 import com.fortuna.fabricktest.service.FabrickRestService;
 import com.fortuna.fabricktest.service.account.bean.AccountBalancePayload;
 import com.fortuna.fabricktest.service.account.bean.TransactionPayload;
 import com.fortuna.fabricktest.service.account.bean.TransactionPayload.Transaction;
+import com.fortuna.fabricktest.service.bean.FabrickResponse;
 
 @Service
 public class AccountService extends FabrickRestService implements AccountServiceI {

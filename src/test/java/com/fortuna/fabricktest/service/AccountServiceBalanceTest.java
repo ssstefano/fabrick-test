@@ -1,6 +1,5 @@
 package com.fortuna.fabricktest.service;
 
-import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -17,6 +16,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.autoconfigure.web.client.RestClientTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -24,12 +24,15 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.client.MockRestServiceServer;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fortuna.fabricktest.data.TransactionRepository;
 import com.fortuna.fabricktest.enums.EnumError;
 import com.fortuna.fabricktest.exception.FabrickRestException;
 import com.fortuna.fabricktest.exception.ServiceException;
 import com.fortuna.fabricktest.service.account.AccountService;
 import com.fortuna.fabricktest.service.account.AccountServiceI;
 import com.fortuna.fabricktest.service.account.bean.AccountBalancePayload;
+import com.fortuna.fabricktest.service.bean.FabrickError;
+import com.fortuna.fabricktest.service.bean.FabrickResponse;
 
 
 @ActiveProfiles("test")
@@ -41,6 +44,9 @@ class AccountServiceBalanceTest {
 
 	@Autowired
 	private MockRestServiceServer server;
+	
+	@MockBean
+    private TransactionRepository transactionRepository;
 	
 	@Autowired
 	private ObjectMapper objectMapper;
@@ -69,10 +75,10 @@ class AccountServiceBalanceTest {
 		server.verify();
 		
 		assertNotNull(pl);
-		assertThat(pl.getAvailableBalance().equals(500l));
-		assertThat(pl.getBalance().equals(400l));
-		assertThat(pl.getDate().equals(LocalDate.now()));
-		assertThat(pl.getCurrency().equals("EUR"));
+		assertEquals(500l, pl.getAvailableBalance());
+		assertEquals(400l, pl.getBalance());
+		assertEquals(LocalDate.now(), pl.getDate());
+		assertEquals("EUR", pl.getCurrency());
 	}
 	
 	@Test
@@ -92,9 +98,9 @@ class AccountServiceBalanceTest {
 		
 		List<FabrickError> list = e.getErrors();
 		assertNotNull(list);
-		assertEquals(list.size(), 1);
-		assertEquals(list.get(0).getCode(), "ERR001");
-		assertEquals(list.get(0).getDescription(), "Err Description");
+		assertEquals(1, list.size());
+		assertEquals("ERR001", list.get(0).getCode());
+		assertEquals("Err Description", list.get(0).getDescription());
 	}
 	
 	@Test
@@ -113,7 +119,7 @@ class AccountServiceBalanceTest {
 		
 		EnumError err = e.getError();
 		assertNotNull(err);
-		assertEquals(err, EnumError.SERVICE);
+		assertEquals(EnumError.SERVICE, err);
 	}
 	
 	@BeforeEach

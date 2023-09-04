@@ -20,8 +20,8 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 
 import com.fortuna.fabricktest.exception.FabrickRestException;
-import com.fortuna.fabricktest.service.FabrickError;
 import com.fortuna.fabricktest.service.account.AccountServiceI;
+import com.fortuna.fabricktest.service.bean.FabrickError;
 
 @WebMvcTest(AccountController.class)
 @ActiveProfiles("test")
@@ -35,7 +35,7 @@ public class AccountControllerRestExceptionTest {
 	@Test
 	public void getBalanceHandleException() throws Exception {
 		
-		this.mockMvc.perform(get("/account/balance").queryParam("accountId", "123456"))
+		this.mockMvc.perform(get("/account/123456/balance"))
 		.andExpect(status().is4xxClientError())
 		.andExpect(jsonPath("$", hasSize(1)))
 		.andExpect(jsonPath("$[0].errorCode", is("ABC123")))

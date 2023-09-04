@@ -1,4 +1,4 @@
-package com.fortuna.fabricktest.service;
+package com.fortuna.fabricktest.service.bean;
 
 import java.util.List;
 

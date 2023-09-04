@@ -27,6 +27,8 @@ import com.fortuna.fabricktest.controller.bean.CreateMoneyTransferReq;
 import com.fortuna.fabricktest.enums.EnumError;
 import com.fortuna.fabricktest.exception.FabrickRestException;
 import com.fortuna.fabricktest.exception.ServiceException;
+import com.fortuna.fabricktest.service.bean.FabrickError;
+import com.fortuna.fabricktest.service.bean.FabrickResponse;
 import com.fortuna.fabricktest.service.moneytransfer.MoneyTransferService;
 import com.fortuna.fabricktest.service.moneytransfer.MoneyTransferServiceI;
 import com.fortuna.fabricktest.service.moneytransfer.bean.Account;
@@ -75,10 +77,10 @@ class MoneyTransferServiceTest {
 		assertNotNull(pl);
 		assertNotNull(pl.getCreditor());
 		assertNotNull(pl.getCreditor().getAccount());
-		assertEquals(pl.getCreditor().getName(), "creditorName");
-		assertEquals(pl.getCreditor().getAccount().getAccountCode(), "IT123");
-		assertEquals(pl.getDirection(), "OUT");
-		assertEquals(pl.getStatus(), "OK");
+		assertEquals("creditorName", pl.getCreditor().getName());
+		assertEquals("IT123", pl.getCreditor().getAccount().getAccountCode());
+		assertEquals("OUT", pl.getDirection());
+		assertEquals("OK", pl.getStatus());
 		
 	}
 	
@@ -99,9 +101,9 @@ class MoneyTransferServiceTest {
 		
 		List<FabrickError> list = e.getErrors();
 		assertNotNull(list);
-		assertEquals(list.size(), 1);
-		assertEquals(list.get(0).getCode(), "ERR001");
-		assertEquals(list.get(0).getDescription(), "Err Description");
+		assertEquals(1, list.size());
+		assertEquals("ERR001", list.get(0).getCode());
+		assertEquals("Err Description", list.get(0).getDescription());
 	}
 	
 	@Test
@@ -120,7 +122,7 @@ class MoneyTransferServiceTest {
 		
 		EnumError err = e.getError();
 		assertNotNull(err);
-		assertEquals(err, EnumError.SERVICE);
+		assertEquals(EnumError.SERVICE, err);
 	}
 	
 	@BeforeEach
@@ -136,12 +138,10 @@ class MoneyTransferServiceTest {
 		
 		CreateMoneyTransferPayload pl = new CreateMoneyTransferPayload();
 		
-		Creditor cred = new Creditor();
-		cred.setName("creditorName");;
+		Account acc = new Account("IT123");
+	
+		Creditor cred = new Creditor(acc, "creditorName");
 		
-		Account acc = new Account();
-		acc.setAccountCode("IT123");
-		cred.setAccount(acc);
 		pl.setCreditor(cred);
 		
 		pl.setDirection("OUT");

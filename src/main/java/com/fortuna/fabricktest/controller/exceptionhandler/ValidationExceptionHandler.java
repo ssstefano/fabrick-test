@@ -23,7 +23,7 @@ import jakarta.validation.ConstraintViolationException;
 
 @Order(Ordered.HIGHEST_PRECEDENCE)
 @ControllerAdvice
-public class ValidationExceptionHandler extends GenericExceptionHandler {
+public class ValidationExceptionHandler extends BaseExceptionHandler {
 
     @Override
     public ResponseEntity<Object> handleMethodArgumentNotValid(
@@ -33,7 +33,7 @@ public class ValidationExceptionHandler extends GenericExceptionHandler {
     	.map(err -> new ErrorRes(EnumError.VALIDATION.getErrorCode(), err.getField() + " "+ err.getDefaultMessage()))
     	.collect(Collectors.toList());
         
-    	return handleExceptionInternal(ex, errors, headers, HttpStatus.BAD_REQUEST, request);
+    	return handleExceptionInternalWithInfoLog(ex, errors, headers, HttpStatus.BAD_REQUEST, request);
     }
     
     @Override
@@ -44,7 +44,7 @@ public class ValidationExceptionHandler extends GenericExceptionHandler {
     	
     	errors.add(new ErrorRes(EnumError.VALIDATION.getErrorCode(), ex.getMessage()));
     
-    	return handleExceptionInternal(ex, errors, headers, HttpStatus.BAD_REQUEST, request);
+    	return handleExceptionInternalWithInfoLog(ex, errors, headers, HttpStatus.BAD_REQUEST, request);
     }
     
     @ExceptionHandler(ConstraintViolationException.class)
@@ -54,7 +54,7 @@ public class ValidationExceptionHandler extends GenericExceptionHandler {
     	
     	errors.add(new ErrorRes(EnumError.VALIDATION.getErrorCode(), ex.getMessage()));
     
-    	return handleExceptionInternal(ex, errors, new HttpHeaders(), HttpStatus.BAD_REQUEST, request);
+    	return handleExceptionInternalWithInfoLog(ex, errors, new HttpHeaders(), HttpStatus.BAD_REQUEST, request);
     }
 
 }

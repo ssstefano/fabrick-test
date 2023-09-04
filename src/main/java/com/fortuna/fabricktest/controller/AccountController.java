@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -20,7 +21,7 @@ import com.fortuna.fabricktest.service.account.bean.TransactionPayload.Transacti
 import jakarta.validation.constraints.NotNull;
 
 @RestController
-@RequestMapping("account")
+@RequestMapping("account/{accountId}")
 @Validated
 public class AccountController {
 	
@@ -28,7 +29,7 @@ public class AccountController {
 	private AccountServiceI accountService;
 	
 	@GetMapping("/balance")
-	public ResponseEntity<Long> balance(@RequestParam(value = "accountId") @NotNull String accountId) {
+	public ResponseEntity<Long> balance(@PathVariable(value = "accountId") @NotNull String accountId) {
 	
 		AccountBalancePayload accBalance = accountService.getAccountBalance(accountId);
 		
@@ -38,11 +39,14 @@ public class AccountController {
 	//TODO: fare method validator per validare entrambe le date
 	@GetMapping("/transactions")
 	public ResponseEntity<List<Transaction>> transactions(
-			@RequestParam(value = "accountId") @NotNull String accountId, 
+			@PathVariable(value = "accountId") @NotNull String accountId, 
 			@RequestParam(value = "fromDate")  @DateConstraint String fromDate, 
 			@RequestParam(value = "toDate") @DateConstraint String toDate) {
 		
-		TransactionPayload transactions = accountService.getAccountTransactionsAndSave(accountId, LocalDate.parse(fromDate), LocalDate.parse(toDate));
+		LocalDate from = LocalDate.parse(fromDate);
+		LocalDate to = LocalDate.parse(toDate);
+		
+		TransactionPayload transactions = accountService.getAccountTransactionsAndSave(accountId, from , to);
 		
 		return ResponseEntity.ok(transactions.getList());
 	}

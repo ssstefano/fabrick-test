@@ -17,6 +17,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.autoconfigure.web.client.RestClientTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -24,12 +25,15 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.client.MockRestServiceServer;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fortuna.fabricktest.data.TransactionRepository;
 import com.fortuna.fabricktest.enums.EnumError;
 import com.fortuna.fabricktest.exception.FabrickRestException;
 import com.fortuna.fabricktest.exception.ServiceException;
 import com.fortuna.fabricktest.service.account.AccountService;
 import com.fortuna.fabricktest.service.account.AccountServiceI;
 import com.fortuna.fabricktest.service.account.bean.TransactionPayload;
+import com.fortuna.fabricktest.service.bean.FabrickError;
+import com.fortuna.fabricktest.service.bean.FabrickResponse;
 
 
 @ActiveProfiles("test")
@@ -41,6 +45,9 @@ class AccountServiceTransactionTest {
 
 	@Autowired
 	private MockRestServiceServer server;
+	
+	@MockBean
+    private TransactionRepository transactionRepository;
 	
 	@Autowired
 	private ObjectMapper objectMapper;
@@ -79,12 +86,12 @@ class AccountServiceTransactionTest {
 		
 		TransactionPayload.Transaction t = pl.getList().get(0);
 		
-		assertEquals(t.getOperationId(), "123");
-		assertEquals(t.getTransactionId(), "456");
-		assertEquals(t.getDescription(), "description");
-		assertEquals(t.getCurrency(), Currency.getInstance("EUR"));
-		assertEquals(t.getValueDate(), LocalDate.now());
-		assertEquals(t.getAccountingDate(), LocalDate.now());
+		assertEquals("123", t.getOperationId());
+		assertEquals("456", t.getTransactionId());
+		assertEquals("description", t.getDescription());
+		assertEquals(Currency.getInstance("EUR"), t.getCurrency());
+		assertEquals(LocalDate.now(), t.getValueDate());
+		assertEquals(LocalDate.now(), t.getAccountingDate());
 	}
 	
 	@Test
@@ -109,9 +116,9 @@ class AccountServiceTransactionTest {
 		
 		List<FabrickError> list = e.getErrors();
 		assertNotNull(list);
-		assertEquals(list.size(), 1);
-		assertEquals(list.get(0).getCode(), "ERR001");
-		assertEquals(list.get(0).getDescription(), "Err Description");
+		assertEquals(1, list.size());
+		assertEquals("ERR001", list.get(0).getCode());
+		assertEquals("Err Description", list.get(0).getDescription());
 	}
 	
 	@Test
@@ -126,7 +133,7 @@ class AccountServiceTransactionTest {
 		
 		EnumError err = e.getError();
 		assertNotNull(err);
-		assertEquals(err, EnumError.SERVICE_TRANSACTION);
+		assertEquals(EnumError.SERVICE_TRANSACTION, err);
 	}
 	
 	@BeforeEach

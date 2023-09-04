@@ -16,7 +16,7 @@ import com.fortuna.fabricktest.enums.EnumError;
 
 @ControllerAdvice
 @Order(2)
-public class RuntimeExceptionHandler extends GenericExceptionHandler {
+public class RuntimeExceptionHandler extends BaseExceptionHandler {
   
    @ExceptionHandler(RuntimeException.class)
    protected ResponseEntity<Object> handleException(RuntimeException ex, WebRequest request) {
@@ -25,6 +25,6 @@ public class RuntimeExceptionHandler extends GenericExceptionHandler {
 	  ErrorRes error = new ErrorRes(EnumError.RUNTIME.getErrorCode(),EnumError.RUNTIME.getErrorMessage());
 	  errors.add(error);
 	  
-	  return handleExceptionInternal(ex, errors, new HttpHeaders(), HttpStatus.valueOf(500), request);
+	  return handleExceptionInternalWithErrorLog(ex, errors, new HttpHeaders(), HttpStatus.valueOf(500), request);
    }
 }

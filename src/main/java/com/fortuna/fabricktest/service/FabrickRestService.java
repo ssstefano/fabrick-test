@@ -12,6 +12,7 @@ import org.springframework.web.client.RestClientResponseException;
 import org.springframework.web.client.RestTemplate;
 
 import com.fortuna.fabricktest.exception.FabrickRestException;
+import com.fortuna.fabricktest.service.bean.FabrickResponse;
 
 /*
  * 
@@ -27,7 +28,6 @@ public class FabrickRestService {
 
 	private RestTemplate client;
 	
-
 	@Autowired
 	public FabrickRestService(RestTemplateBuilder builder) {
 	    this.client = builder.build();
@@ -38,6 +38,7 @@ public class FabrickRestService {
 		RequestEntity<Void> requestEntity = RequestEntity.get(uri)
 				.header("Auth-Schema", authSchema)
 				.header("Api-Key", apiKey)
+				.header("X-Time-Zone", "Europe/Rome")
 				.build();
 		
 		ResponseEntity<T> resEntity = null;

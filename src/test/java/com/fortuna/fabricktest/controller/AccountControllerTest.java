@@ -38,8 +38,7 @@ class AccountControllerTest {
 	@Test
 	void getBalanceOk() throws Exception {
 		
-		this.mockMvc.perform(get("/account/balance")
-			.queryParam("accountId", "123456"))
+		this.mockMvc.perform(get("/account/123456/balance"))
 			.andExpect(status().isOk())
 			.andExpect(content().string("500"));
 	}
@@ -54,8 +53,7 @@ class AccountControllerTest {
 	@Test
 	void getTransactionOk() throws Exception {
 		
-		this.mockMvc.perform(get("/account/transactions")
-			.queryParam("accountId", "123456")
+		this.mockMvc.perform(get("/account/123456/transactions")
 			.queryParam("fromDate", "2019-01-01")
 			.queryParam("toDate", "2019-12-01"))
 			.andExpect(status().isOk())
@@ -68,14 +66,14 @@ class AccountControllerTest {
 	@Test
 	void getTransactionMissingParameter() throws Exception {
 		
-		this.mockMvc.perform(get("/account/transactions"))
+		this.mockMvc.perform(get("/account/123456/transactions"))
 			.andExpect(status().is4xxClientError());
 	}
 	
 	@Test
 	void getTransactionWrongParameterFormat() throws Exception {
 		
-		this.mockMvc.perform(get("/account/transactions")
+		this.mockMvc.perform(get("/account/123456/transactions")
 			.queryParam("accountId", "123456")
 			.queryParam("fromDate", "2019-01-")
 			.queryParam("toDate", "2019-12-01"))
@@ -112,6 +110,6 @@ class AccountControllerTest {
 		
 		transactionMock.setList(list);
 		
-		when(accService.getAccountTransactions(accountId, fromDate, toDate)).thenReturn(transactionMock);
+		when(accService.getAccountTransactionsAndSave(accountId, fromDate, toDate)).thenReturn(transactionMock);
 	  }
 }

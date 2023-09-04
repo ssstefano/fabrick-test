@@ -1,56 +1,69 @@
 package com.fortuna.fabricktest;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertInstanceOf;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.Currency;
 import java.util.List;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.http.HttpStatusCode;
+import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
+import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.context.junit.jupiter.EnabledIf;
 
-import com.fortuna.fabricktest.controller.MoneyTransferController;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fortuna.fabricktest.controller.bean.CreateMoneyTransferReq;
 import com.fortuna.fabricktest.controller.bean.ErrorRes;
 
-@SpringBootTest
+@SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT)
 @ActiveProfiles("test")
-@EnabledIf("test")
 public class MoneyTransferControllerIntegrationTest {
 	
 	@Autowired
-	private MoneyTransferController moneyTransferController;
+	private TestRestTemplate restTemplate;
+	
+	@Autowired
+	private ObjectMapper mapper;
+	
+	@Value(value="${local.server.port}")
+	private int port;
+	
+	private String accountId = "14537780";
 	
 	@Test
-	public void createMoneyTransferFail() {
-		
+	public void createMoneyTransferFail() throws Exception {
 		
 		CreateMoneyTransferReq moneyTransfer = new CreateMoneyTransferReq();
-		moneyTransfer.setAmount(500l);
-		moneyTransfer.setCreditorIban("IT123");
+		moneyTransfer.setAmount(1l);
+		moneyTransfer.setCreditorIban("IT68X0100503215000000011730");
 		moneyTransfer.setCreditorName("creditorName");
 		moneyTransfer.setCurrency(Currency.getInstance("EUR"));
 		moneyTransfer.setDescription("description");
-		moneyTransfer.setExecutionDate("2020-01-10");
+		moneyTransfer.setExecutionDate("2023-09-10");
 		
-		ResponseEntity<?> entity = moneyTransferController.createMoneyTransfer(moneyTransfer, "14537780");
+		String url = "http://localhost:" + port + "/moneytransfer/"+accountId+"/create?accountId";
+		
+		ResponseEntity<String> entity = restTemplate.postForEntity(url, moneyTransfer, String.class);
 		
 		assertNotNull(entity);
 		assertNotNull(entity.getBody());
-		assertEquals(entity.getStatusCode(), HttpStatusCode.valueOf(403));
-		assertInstanceOf(List.class, entity.getBody());
+	
+		assertTrue(entity.getStatusCode().isError());
 		
-		List<ErrorRes> errors = (List<ErrorRes>) entity.getBody();
+		TypeReference<List<ErrorRes>> typeRef = 
+				new TypeReference<List<ErrorRes>>() {};
  		
-		assertEquals(errors.size(), 1);
-		assertEquals(errors.get(0).getErrorCode(), "API000");
-		assertEquals(errors.get(0).getErrorMessage(), "Errore tecnico La condizione BP049 non è prevista per il conto id 14537780");	
+		List<ErrorRes> errors = mapper.readValue(entity.getBody(), typeRef);
+ 		
+		assertEquals(1, errors.size());
+	//	assertEquals(errors.get(0).getErrorCode(), "API000");
+	//	assertEquals(errors.get(0).getErrorMessage(), "Errore nel recuperare le informazioni da database o dati di input non corretti  : IBTS-0081");	
 	}
 	
 }

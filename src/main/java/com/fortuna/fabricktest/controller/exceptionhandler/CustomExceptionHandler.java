@@ -19,8 +19,8 @@ import com.fortuna.fabricktest.exception.ServiceException;
 
 @Order(1)
 @ControllerAdvice
-public class CustomExceptionHandler extends GenericExceptionHandler {
-  
+public class CustomExceptionHandler extends BaseExceptionHandler {
+  	
    @ExceptionHandler(FabrickRestException.class)
    protected ResponseEntity<Object> handleFabrickRestException(FabrickRestException ex, WebRequest request) {
 	   
@@ -42,7 +42,7 @@ public class CustomExceptionHandler extends GenericExceptionHandler {
 		   errors.add(error);
 	   }
 	   
-	   return handleExceptionInternal(ex, errors, new HttpHeaders(), statusCode, request);
+	   return handleExceptionInternalWithInfoLog(ex, errors, new HttpHeaders(), statusCode, request);
    }
    
    @ExceptionHandler(ServiceException.class)
@@ -52,6 +52,6 @@ public class CustomExceptionHandler extends GenericExceptionHandler {
 	  ErrorRes error = new ErrorRes(ex.getError().getErrorCode(),ex.getError().getErrorMessage());
 	  errors.add(error);
 	  
-	  return handleExceptionInternal(ex, errors, new HttpHeaders(), HttpStatusCode.valueOf(500), request);
+	  return handleExceptionInternalWithErrorLog(ex, errors, new HttpHeaders(), HttpStatusCode.valueOf(500), request);
    }
 }

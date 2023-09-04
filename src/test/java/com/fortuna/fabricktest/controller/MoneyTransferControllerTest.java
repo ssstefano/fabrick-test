@@ -40,8 +40,7 @@ class MoneyTransferControllerTest {
 	@Test
 	void createMoneyTransferOk() throws Exception {
 		
-		this.mockMvc.perform(post("/moneytransfer/create")
-			.queryParam("accountId", "123456")
+		this.mockMvc.perform(post("/moneytransfer/123456/create")
 			.contentType(MediaType.APPLICATION_JSON)
 			.content(createMoneyTransferReqJsonOk))
 			.andExpect(status().is2xxSuccessful())
@@ -53,8 +52,7 @@ class MoneyTransferControllerTest {
 	@Test
 	void createMoneyTransferMissingBodyParameter() throws Exception {
 		
-		this.mockMvc.perform(post("/moneytransfer/create")
-			.queryParam("accountId", "123456")
+		this.mockMvc.perform(post("/moneytransfer/123456/create")
 			.contentType(MediaType.APPLICATION_JSON)
 			.content(createMoneyTransferReqJsonFail))
 			.andExpect(status().is4xxClientError());
@@ -63,7 +61,7 @@ class MoneyTransferControllerTest {
 	@Test
 	void createMoneyTransferMissingAccountId() throws Exception {
 		
-		this.mockMvc.perform(post("/moneytransfer/create"))
+		this.mockMvc.perform(post("/moneytransfer/123456/create"))
 			.andExpect(status().is4xxClientError());
 	}
 	
