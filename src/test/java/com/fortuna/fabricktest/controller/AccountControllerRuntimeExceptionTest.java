@@ -39,5 +39,5 @@ public class AccountControllerRuntimeExceptionTest {
 	@BeforeEach
 	public void setUp() {
 		when(accService.getAccountBalance("123456")).thenThrow(new NullPointerException());
-	  }
+	}
 }

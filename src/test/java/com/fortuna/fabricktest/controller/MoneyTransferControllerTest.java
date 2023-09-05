@@ -37,6 +37,9 @@ class MoneyTransferControllerTest {
 	private String createMoneyTransferReqJsonOk;
 	private String createMoneyTransferReqJsonFail;
 	
+	@Autowired
+	private ObjectMapper mapper;
+	
 	@Test
 	void createMoneyTransferOk() throws Exception {
 		
@@ -85,8 +88,6 @@ class MoneyTransferControllerTest {
 		input.setCurrency(Currency.getInstance("EUR"));
 		input.setDescription("ABC");
 		input.setExecutionDate("2023-12-01");
-		
-		ObjectMapper mapper = new ObjectMapper();
 		
 		createMoneyTransferReqJsonOk = mapper.writeValueAsString(input);
 		

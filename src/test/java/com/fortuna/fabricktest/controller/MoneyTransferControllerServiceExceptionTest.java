@@ -65,9 +65,7 @@ public class MoneyTransferControllerServiceExceptionTest {
 		input.setCurrency(Currency.getInstance("EUR"));
 		input.setDescription("ABC");
 		input.setExecutionDate("2023-12-01");
-		
-		ObjectMapper mapper = new ObjectMapper();
-		
+				
 		createMoneyTransferReqJson = mapper.writeValueAsString(input);
 	}
 }
