@@ -119,7 +119,7 @@ public class AccountControllerIntegrationTest {
 		
 		assertNotNull(entity);
 		assertNotNull(entity.getBody());
-		assertEquals(HttpStatusCode.valueOf(500), entity.getStatusCode());
+		assertEquals(HttpStatusCode.valueOf(400), entity.getStatusCode());
 		
 		TypeReference<List<ErrorRes>> typeRef = 
 				new TypeReference<List<ErrorRes>>() {};
@@ -127,7 +127,7 @@ public class AccountControllerIntegrationTest {
 		List<ErrorRes> errors = mapper.readValue(entity.getBody(), typeRef);
  		
 		assertEquals(1, errors.size());
-		assertEquals(EnumError.SERVICE_TRANSACTION.getErrorCode(), errors.get(0).getErrorCode());
-		assertEquals(EnumError.SERVICE_TRANSACTION.getErrorMessage(), errors.get(0).getErrorMessage());	
+		assertEquals(EnumError.CONTROLLER_DATE_CONSISTENCY.getErrorCode(), errors.get(0).getErrorCode());
+		assertEquals(EnumError.CONTROLLER_DATE_CONSISTENCY.getErrorMessage(), errors.get(0).getErrorMessage());	
 	}
 }

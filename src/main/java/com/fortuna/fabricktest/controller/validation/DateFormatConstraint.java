@@ -11,9 +11,9 @@ import jakarta.validation.Payload;
 
 @Target({ ElementType.PARAMETER, ElementType.FIELD, ElementType.ANNOTATION_TYPE })
 @Retention(RetentionPolicy.RUNTIME)
-@Constraint(validatedBy = DateValidator.class)
+@Constraint(validatedBy = DateFormatValidator.class)
 @Documented
-public @interface DateConstraint {
+public @interface DateFormatConstraint {
 
     String message() default "date format must be yyyy-MM-dd";
 

@@ -31,7 +31,4 @@ public class AccountBalancePayload {
 	public void setCurrency(String currency) {
 		this.currency = currency;
 	}
-	
-	
-	
 }

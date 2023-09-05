@@ -2,7 +2,7 @@ package com.fortuna.fabricktest.controller.bean;
 
 import java.util.Currency;
 
-import com.fortuna.fabricktest.controller.validation.DateConstraint;
+import com.fortuna.fabricktest.controller.validation.DateFormatConstraint;
 
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
@@ -13,7 +13,7 @@ public class CreateMoneyTransferReq {
 	private String creditorName;
 	@NotNull
 	private String creditorIban;
-	@DateConstraint
+	@DateFormatConstraint
 	private String executionDate;
 	@NotNull
 	private String description;

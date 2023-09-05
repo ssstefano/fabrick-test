@@ -40,7 +40,7 @@ import com.fortuna.fabricktest.service.bean.FabrickResponse;
 class AccountServiceBalanceTest {
 
 	@Autowired
-    private AccountServiceI client;
+    private AccountServiceI accountService;
 
 	@Autowired
 	private MockRestServiceServer server;
@@ -70,7 +70,7 @@ class AccountServiceBalanceTest {
 			.contentType(MediaType.APPLICATION_JSON)
         	.body(bodyAsJsonOk));
 		
-		AccountBalancePayload pl = client.getAccountBalance(accountId);
+		AccountBalancePayload pl = accountService.getAccountBalance(accountId);
 		
 		server.verify();
 		
@@ -91,7 +91,7 @@ class AccountServiceBalanceTest {
         	.body(bodyAsJsonFail));
 			
 		FabrickRestException e = assertThrows(FabrickRestException.class, () -> {
-            client.getAccountBalance(accountId);
+			accountService.getAccountBalance(accountId);
 		});
 		
 		server.verify();
@@ -112,7 +112,7 @@ class AccountServiceBalanceTest {
 			.contentType(MediaType.APPLICATION_JSON));
 			
 		ServiceException e = assertThrows(ServiceException.class, () -> {
-            client.getAccountBalance(accountId);
+			accountService.getAccountBalance(accountId);
 		});
 		
 		server.verify();

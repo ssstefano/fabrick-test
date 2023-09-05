@@ -14,6 +14,7 @@ import org.springframework.web.context.request.WebRequest;
 
 import com.fortuna.fabricktest.controller.bean.ErrorRes;
 import com.fortuna.fabricktest.enums.EnumError;
+import com.fortuna.fabricktest.exception.ControllerException;
 import com.fortuna.fabricktest.exception.FabrickRestException;
 import com.fortuna.fabricktest.exception.ServiceException;
 
@@ -22,7 +23,7 @@ import com.fortuna.fabricktest.exception.ServiceException;
 public class CustomExceptionHandler extends BaseExceptionHandler {
   	
    @ExceptionHandler(FabrickRestException.class)
-   protected ResponseEntity<Object> handleFabrickRestException(FabrickRestException ex, WebRequest request) {
+   public ResponseEntity<Object> handleFabrickRestException(FabrickRestException ex, WebRequest request) {
 	   
 	   List<ErrorRes> errors = null;
 	   HttpStatusCode statusCode = ex.getStatusCode();
@@ -37,7 +38,7 @@ public class CustomExceptionHandler extends BaseExceptionHandler {
 				   .map(err -> new ErrorRes(err.getCode(), err.getDescription()))
 				   .collect(Collectors.toList());
 	   } else {
-		   ErrorRes error = new ErrorRes(EnumError.REST.getErrorCode(), EnumError.REST.getErrorMessage());
+		   ErrorRes error = new ErrorRes(EnumError.REST);
 		   errors = new ArrayList<>();
 		   errors.add(error);
 	   }
@@ -45,11 +46,21 @@ public class CustomExceptionHandler extends BaseExceptionHandler {
 	   return handleExceptionInternalWithInfoLog(ex, errors, new HttpHeaders(), statusCode, request);
    }
    
-   @ExceptionHandler(ServiceException.class)
-   protected ResponseEntity<Object> handleServiceException(ServiceException ex, WebRequest request) {
+   @ExceptionHandler(ControllerException.class)
+   public ResponseEntity<Object> handleServiceException(ControllerException ex, WebRequest request) {
 	   
 	  List<ErrorRes> errors = new ArrayList<>();
-	  ErrorRes error = new ErrorRes(ex.getError().getErrorCode(),ex.getError().getErrorMessage());
+	  ErrorRes error = new ErrorRes(ex.getError());
+	  errors.add(error);
+	  
+	  return handleExceptionInternalWithInfoLog(ex, errors, new HttpHeaders(), HttpStatusCode.valueOf(400), request);
+   }
+   
+   @ExceptionHandler(ServiceException.class)
+   public ResponseEntity<Object> handleServiceException(ServiceException ex, WebRequest request) {
+	   
+	  List<ErrorRes> errors = new ArrayList<>();
+	  ErrorRes error = new ErrorRes(ex.getError());
 	  errors.add(error);
 	  
 	  return handleExceptionInternalWithErrorLog(ex, errors, new HttpHeaders(), HttpStatusCode.valueOf(500), request);

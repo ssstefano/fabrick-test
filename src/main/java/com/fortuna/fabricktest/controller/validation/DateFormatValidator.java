@@ -7,7 +7,7 @@ import java.time.format.DateTimeParseException;
 import jakarta.validation.ConstraintValidator;
 import jakarta.validation.ConstraintValidatorContext;
 
-public class DateValidator implements ConstraintValidator<DateConstraint, String> {
+public class DateFormatValidator implements ConstraintValidator<DateFormatConstraint, String> {
 	
 
 	@Override

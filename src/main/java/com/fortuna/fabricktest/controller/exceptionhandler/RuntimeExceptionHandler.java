@@ -22,7 +22,7 @@ public class RuntimeExceptionHandler extends BaseExceptionHandler {
    protected ResponseEntity<Object> handleException(RuntimeException ex, WebRequest request) {
 	   
 	  List<ErrorRes> errors = new ArrayList<>();
-	  ErrorRes error = new ErrorRes(EnumError.RUNTIME.getErrorCode(),EnumError.RUNTIME.getErrorMessage());
+	  ErrorRes error = new ErrorRes(EnumError.RUNTIME);
 	  errors.add(error);
 	  
 	  return handleExceptionInternalWithErrorLog(ex, errors, new HttpHeaders(), HttpStatus.valueOf(500), request);

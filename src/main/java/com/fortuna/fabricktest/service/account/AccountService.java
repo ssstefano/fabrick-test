@@ -114,6 +114,7 @@ public class AccountService extends FabrickRestService implements AccountService
 			entity.setCurrency(tr.getCurrency().getCurrencyCode());
 			entity.setOperationId(tr.getOperationId());
 			entity.setTransactionId(tr.getTransactionId());
+			
 			return entity;
 				
 			}).collect(Collectors.toList());

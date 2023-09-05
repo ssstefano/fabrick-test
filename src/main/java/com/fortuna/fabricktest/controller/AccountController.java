@@ -12,7 +12,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.fortuna.fabricktest.controller.validation.DateConstraint;
+import com.fortuna.fabricktest.controller.validation.DateFormatConstraint;
+import com.fortuna.fabricktest.enums.EnumError;
+import com.fortuna.fabricktest.exception.ControllerException;
 import com.fortuna.fabricktest.service.account.AccountServiceI;
 import com.fortuna.fabricktest.service.account.bean.AccountBalancePayload;
 import com.fortuna.fabricktest.service.account.bean.TransactionPayload;
@@ -36,18 +38,21 @@ public class AccountController {
 		return ResponseEntity.ok(accBalance.getBalance());
 	}
 	
-	//TODO: fare method validator per validare entrambe le date
 	@GetMapping("/transactions")
 	public ResponseEntity<List<Transaction>> transactions(
 			@PathVariable(value = "accountId") @NotNull String accountId, 
-			@RequestParam(value = "fromDate")  @DateConstraint String fromDate, 
-			@RequestParam(value = "toDate") @DateConstraint String toDate) {
+			@RequestParam(value = "fromDate")  @DateFormatConstraint String fromDate, 
+			@RequestParam(value = "toDate") @DateFormatConstraint String toDate) {
 		
 		LocalDate from = LocalDate.parse(fromDate);
 		LocalDate to = LocalDate.parse(toDate);
 		
-		TransactionPayload transactions = accountService.getAccountTransactionsAndSave(accountId, from , to);
-		
-		return ResponseEntity.ok(transactions.getList());
+		if(to.isAfter(from) || to.isEqual(from) ) {
+			TransactionPayload transactions = accountService.getAccountTransactionsAndSave(accountId, from , to);
+			
+			return ResponseEntity.ok(transactions.getList());
+		} else {
+			throw new ControllerException(EnumError.CONTROLLER_DATE_CONSISTENCY);
+		}
 	}
 }

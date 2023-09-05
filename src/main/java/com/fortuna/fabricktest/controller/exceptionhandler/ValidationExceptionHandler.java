@@ -37,7 +37,7 @@ public class ValidationExceptionHandler extends BaseExceptionHandler {
     }
     
     @Override
-    protected ResponseEntity<Object> handleMissingServletRequestParameter(
+    public ResponseEntity<Object> handleMissingServletRequestParameter(
 			MissingServletRequestParameterException ex, HttpHeaders headers, HttpStatusCode status, WebRequest request) {
     	
     	List<ErrorRes> errors =  new ArrayList<>();
@@ -56,5 +56,4 @@ public class ValidationExceptionHandler extends BaseExceptionHandler {
     
     	return handleExceptionInternalWithInfoLog(ex, errors, new HttpHeaders(), HttpStatus.BAD_REQUEST, request);
     }
-
 }
